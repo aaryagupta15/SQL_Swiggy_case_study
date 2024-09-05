@@ -1,5 +1,7 @@
-SELECT r.r_name, YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_revenue,
-       (SUM(amount) - LAG(SUM(amount)) OVER (PARTITION BY r.r_id ORDER BY YEAR(date), MONTH(date))) / LAG(SUM(amount)) OVER (PARTITION BY r.r_id ORDER BY YEAR(date), MONTH(date)) * 100 AS revenue_growth_percentage
-FROM orders o
-JOIN restaurant r ON o.r_id = r.r_id
-GROUP BY r.r_name, YEAR(date), MONTH(date);
+SELECT
+    MONTH(date) AS month,
+    SUM(amount) AS monthly_revenue,
+    (SUM(amount) - LAG(SUM(amount)) OVER (ORDER BY MONTH(date))) / LAG(SUM(amount)) OVER (ORDER BY MONTH(date)) * 100 AS revenue_growth_percentage
+FROM orders
+GROUP BY month
+ORDER BY month;
