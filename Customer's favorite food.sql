@@ -1,7 +1,7 @@
-SELECT u.name, f.f_name, COUNT(od.f_id) AS order_count
-FROM users u
-JOIN orders o ON u.user_id = o.user_id
-JOIN order_details od ON o.order_id = od.order_id
-JOIN food f ON od.f_id = f.f_id
-GROUP BY u.user_id, f.f_name
-ORDER BY order_count DESC;
+SELECT users.name, food.f_name, COUNT(order_details.f_id) AS total_orders
+FROM orders
+JOIN order_details ON orders.order_id = order_details.order_id
+JOIN users ON orders.user_id = users.user_id
+JOIN food ON order_details.f_id = food.f_id
+GROUP BY users.name, food.f_name
+ORDER BY total_orders DESC;
