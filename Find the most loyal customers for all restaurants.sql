@@ -1,6 +1,6 @@
-SELECT r.r_name, u.name, COUNT(o.user_id) AS order_count
-FROM orders o
-JOIN users u ON o.user_id = u.user_id
-JOIN restaurant r ON o.r_id = r.r_id
-GROUP BY r.r_name, u.name
-ORDER BY order_count DESC;
+SELECT r_name, users.name, COUNT(orders.user_id) AS total_orders
+FROM orders
+JOIN restaurant ON orders.r_id = restaurant.r_id
+JOIN users ON orders.user_id = users.user_id
+GROUP BY r_name, users.name
+ORDER BY total_orders DESC;
