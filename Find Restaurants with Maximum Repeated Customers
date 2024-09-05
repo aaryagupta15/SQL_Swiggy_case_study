@@ -1,0 +1,6 @@
+SELECT r_name, user_id, COUNT(*) AS repeat_orders
+FROM orders
+JOIN restaurant ON orders.r_id = restaurant.r_id
+GROUP BY r_name, user_id
+HAVING repeat_orders > 1
+ORDER BY repeat_orders DESC;
