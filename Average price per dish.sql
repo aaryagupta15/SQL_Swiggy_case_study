@@ -1,2 +1,2 @@
-SELECT AVG(price) AS avg_price_per_dish
-FROM menu;
+SELECT f_id, avg(price) FROM zomato.menu
+GROUP BY f_id 
