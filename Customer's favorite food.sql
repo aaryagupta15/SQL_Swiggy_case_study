@@ -1,7 +1,7 @@
-SELECT users.name, food.f_name, COUNT(order_details.f_id) AS total_orders
-FROM orders
-JOIN order_details ON orders.order_id = order_details.order_id
-JOIN users ON orders.user_id = users.user_id
-JOIN food ON order_details.f_id = food.f_id
-GROUP BY users.name, food.f_name
-ORDER BY total_orders DESC;
+WITH favourite AS (SELECT o.user_id, od.f_id, COUNT(*) AS "FAVOURITE_FOOD" FROM swiggy.orders o
+JOIN swiggy.order_details od 
+ON o.order_id = od.order_id
+GROUP BY o.user_id, od.f_id
+)
+
+SELECT * FROM favourite f1 WHERE f1.FAVOURITE_FOOD = (SELECT MAX(FAVOURITE_FOOD) FROM favourite f2 WHERE f2.user_id = f1.user_id)
