@@ -1,6 +1,8 @@
-SELECT r_name, user_id, COUNT(*) AS repeat_orders
-FROM orders
-JOIN restaurant ON orders.r_id = restaurant.r_id
-GROUP BY r_name, user_id
-HAVING repeat_orders > 1
-ORDER BY repeat_orders DESC;
+SELECT t.r_id, r.r_name, COUNT(*) as "loyal customers"
+FROM 
+     (SELECT r_id, user_id, COUNT(*) as "visits" FROM zomato.orders
+      GROUP BY r_id, user_id
+	  HAVING visits>1) as t
+JOIN zomato.restaurants r ON t.r_id = r.r_id
+GROUP BY t.r_id,r.r_name
+ORDER BY COUNT(t.user_id) DESC LIMIT 1
