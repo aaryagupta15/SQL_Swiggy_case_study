@@ -1,8 +1,15 @@
-SELECT f1.f_name AS food_item_1, f2.f_name AS food_item_2, COUNT(*) AS pair_count
-FROM order_details od1
-JOIN order_details od2 ON od1.order_id = od2.order_id AND od1.f_id < od2.f_id
-JOIN food f1 ON od1.f_id = f1.f_id
-JOIN food f2 ON od2.f_id = f2.f_id
-GROUP BY food_item_1, food_item_2
-ORDER BY pair_count DESC
-LIMIT 1;
+SELECT 
+    p1.f_id AS product_1, 
+    p2.f_id AS product_2, 
+    COUNT(*) AS pair_count
+FROM 
+    swiggy.order_details p1
+JOIN 
+    swiggy.order_details p2 
+    ON p1.order_id = p2.order_id 
+    AND p1.f_id < p2.f_id
+GROUP BY 
+    p1.f_id, p2.f_id
+ORDER BY 
+    pair_count DESC
+LIMIT 10;
