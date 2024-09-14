@@ -1,7 +1,7 @@
-SELECT
-    DATE_FORMAT(date, '%Y-%m') AS month,
-    SUM(amount) AS monthly_revenue,
-    (SUM(amount) - LAG(SUM(amount)) OVER (ORDER BY DATE_FORMAT(date, '%Y-%m'))) / LAG(SUM(amount)) OVER (ORDER BY DATE_FORMAT(date, '%Y-%m')) * 100 AS revenue_growth_percentage
-FROM orders
-GROUP BY month
-ORDER BY month;
+SELECT month,((revenue - prev)/prev)*100 FROM (
+WITH sales AS
+     (SELECT monthname(date) AS "month", SUM(amount) AS revenue
+      FROM swiggy.orders
+      GROUP BY monthname(date)
+	  ORDER BY revenue DESC)
+SELECT "month", revenue, LAG(revenue,1) OVER (ORDER BY revenue) AS prev FROM sales) t
