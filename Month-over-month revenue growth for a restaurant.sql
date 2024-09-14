@@ -1,14 +1,33 @@
+WITH sales AS (
+     SELECT 
+          r_id, 
+          monthname(date) AS month, 
+          SUM(amount) AS revenue
+     FROM 
+          swiggy.orders
+     GROUP BY 
+          r_id, monthname(date)
+), 
+
+growth AS (
+     SELECT 
+          r_id, 
+          month, 
+          revenue, 
+          LAG(revenue, 1) OVER (PARTITION BY r_id ORDER BY month) AS prev
+     FROM 
+          sales
+)
+
 SELECT 
-    restaurant.r_name,
-    MONTH(orders.date) AS month,
-    SUM(orders.amount) AS monthly_revenue,
-    (SUM(orders.amount) - LAG(SUM(orders.amount)) OVER (PARTITION BY restaurant.r_id ORDER BY MONTH(orders.date))) / 
-    LAG(SUM(orders.amount)) OVER (PARTITION BY restaurant.r_id ORDER BY MONTH(orders.date)) * 100 AS revenue_growth_percentage
+     r_id, 
+     month, 
+     revenue, 
+     prev, 
+     ((revenue - prev) / prev) * 100 AS revenue_growth_percentage
 FROM 
-    orders
-JOIN 
-    restaurant ON orders.r_id = restaurant.r_id
-GROUP BY 
-    restaurant.r_name, month
+     growth
+WHERE 
+     prev IS NOT NULL
 ORDER BY 
-    restaurant.r_name, month;
+     r_id, month;
